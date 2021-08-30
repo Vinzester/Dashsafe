@@ -1,3 +1,4 @@
+<!-- MAIN PAGE -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,6 +60,8 @@
 					<th>Currency</th>
 					<th>Date Created</th>
 					<th>Date Updated</th>
+					<th></th>
+					<th></th>
 				</tr>
 			</thead>	
 			<tbody>
@@ -74,7 +77,14 @@
 					$result=$conn->query($sql);
 					if($result->num_rows>0){
 						while($row=$result->fetch_assoc()){
-							echo "<tr><td>". $row["name"]."</td><td>". $row["type"]."</td><td>". $row["amount"]."</td><td>". $row["currency"]."</td><td>".$row["dateCreated"]."</td><td>".$row["dateUpdated"]."</td><td><form action='' method='post'><input type='submit' value='open' name='walletOpenKey'></input><input type='hidden' name='walletKey'  value='" . htmlspecialchars($row["walletKey"]) . "''></input></form>";
+							echo "<tr><td>".
+							 $row["name"]."</td><td>". $row["type"]."</td><td>". 
+							 $row["amount"]."</td><td>". 
+							 $row["currency"]."</td><td>".
+							 $row["dateCreated"]."</td><td>".
+							 $row["dateUpdated"]."</td>
+							 <td><form action='' method='post'><input type='submit' value='open' name='walletOpenKey'></input><input type='hidden' name='walletKey'  value='" . htmlspecialchars($row["walletKey"]) . "''></input></form></td>
+							 <td><form action='deleteWallet.php' method='post'><input type='submit' value='delete' name='walletDeleteKey'/><input type='hidden' name='walletKey' value='".htmlspecialchars($row["walletKey"])."'/></form></td>";
 						}
 					}
 				}
@@ -100,22 +110,30 @@ $conn=new mysqli('localhost', 'root','','dashsafewallets');
 			die('Connection Failed :'.$conn->connect_error);
 		}
         else{
-			if(isset($_POST['walletKey'])){
-				$trueWalletKey=$_POST['walletKey'];
-			}else{
-				$trueWalletKey=$_GET['walletKey'];
-			}
-            $searchForWalletKey ="SELECT * from dashsafe where walletKey like '%$trueWalletKey%'";
-            $result=$conn->query($searchForWalletKey);
-            if($result->num_rows>0){
-                while($row=$result->fetch_assoc()){
-            echo "<div id='walletDetailsName'>". $row["name"]."</div><br>
-            <div id='walletDetailsType'>". $row["type"]."</div><br>
-            <div id='walletDetailsCurrency'>". $row["currency"]."</div><br>
-            <div id='walletDetailsAmount'>". $row["amount"]."</div><br>
-            <div id='walletDetailsDateUpdated'". $row["dateUpdated"]."></div><br>";
-                }
-        }
+			if(isset($_POST['walletKey']) or isset($_GET['walletKey'])){
+
+				if(isset($_POST['walletKey'])){
+					$trueWalletKey=$_POST['walletKey'];
+				}else{
+					$trueWalletKey=$_GET['walletKey'];
+				}
+		
+				$searchForWalletKey ="SELECT * from dashsafe where walletKey like '%$trueWalletKey%' ";
+				$result=$conn->query($searchForWalletKey);
+				if (!$result) {
+					trigger_error('Invalid query: ' . $conn->error);
+				}
+				if($result->num_rows>0){
+					while($row=$result->fetch_assoc()){
+				echo "<div id='walletDetailsName'>". $row["name"]."</div><br>
+				<div id='walletDetailsType'>". $row["type"]."</div><br>
+				<div id='walletDetailsCurrency'>". $row["currency"]."</div><br>
+				<div id='walletDetailsAmount'>". $row["amount"]."</div><br>
+				<div id='walletDetailsDateUpdated'". $row["dateUpdated"]."></div><br>";
+					}
+			}}
+			
+
 		
 }
 
@@ -124,7 +142,14 @@ $conn=new mysqli('localhost', 'root','','dashsafewallets');
 ?>
 </div>
 <?php
-echo"<div id='walletActions'>
+	if(isset($_POST['walletKey']) or isset($_GET['walletKey'])){
+
+		if(isset($_POST['walletKey'])){
+			$trueWalletKey=$_POST['walletKey'];
+		}else{
+			$trueWalletKey=$_GET['walletKey'];
+		}
+		echo"<div id='walletActions'>
 	<form action='moneyActions.php' method='POST'>
 		<input type='number' name='walletActionsAmount'/>
 		<input type='hidden' name='walletKey' value='".$trueWalletKey."'/>
@@ -137,32 +162,35 @@ echo"<div id='walletActions'>
 	</form>
 	<form action='moneyActions.php' method='POST'>
 		<input type='number' name='walletActionsAmount'/>
-		<select name='walletActionsTransferTo'>"
-		?>
-			<?php
-			$conn=new mysqli('localhost', 'root','','dashsafewallets');
-			if($conn->connect_error){
-				//kapag may error
-				echo "$conn->connect_error";
-				die('Connection Failed :'.$conn->connect_error);
-			}
-			else{
-				
-				$searchForNames ="SELECT name,walletKey from dashsafe";
-				$result=$conn->query($searchForNames);
-				if($result->num_rows>0){
-					while($row=$result->fetch_assoc()){
-					echo "<option value='".$row['walletKey']."'>".$row['name']."</option>";
-					
-				}
+		<select name='walletActionsTransferTo'>";
+
+		$conn=new mysqli('localhost', 'root','','dashsafewallets');
+		if($conn->connect_error){
+			//kapag may error
+			echo "$conn->connect_error";
+			die('Connection Failed :'.$conn->connect_error);
+		}
+		else{
 			
-	}}?>
-		
-		</select>
-		<?php echo "<input type='hidden' name='walletKey' value='".$trueWalletKey."'/>";?>
-		
+			$searchForNames ="SELECT name,walletKey from dashsafe";
+			$result=$conn->query($searchForNames);
+			if($result->num_rows>0){
+				while($row=$result->fetch_assoc()){
+				echo "<option value='".$row['walletKey']."'>".$row['name']."</option>";
+				
+			}
+		echo"</select>
+		<input type='hidden' name='walletKey' value='".$trueWalletKey."'/>
 		<input type='submit' name='walletActionsTransfer' value='transfer'/>
-	</form>
+		</form>";
+}}
+	}else{
+		echo "";
+	}
+
+
+	?>	
+	
 	
 </div>
 					
@@ -180,9 +208,6 @@ var walletCurrency=document.querySelector("#walletCurrency")
 			walletCurrency.add(myNewOption)
 		})
 	})
-//LOAD WALLET NAMES FOR TRANSFER
-
-
 
 
 	

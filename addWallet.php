@@ -17,7 +17,7 @@ if($conn->connect_error){
     $stmt->bind_param("ssiss",$walletName,$walletType,$walletInitial,$walletCurrency,$date);
     $execval=$stmt->execute();
     var_dump($stmt);
-	header("Location: index.php");
+	header('Location:index.php?');
 }
 	//tapos kailangan iclose naten ung connection
 	$conn->close();
