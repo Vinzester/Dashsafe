@@ -1,0 +1,51 @@
+body{
+    background-color: #222;
+    color:whitesmoke;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+nav{
+    margin-bottom: 50px;
+}
+.profile{
+    width: 40%;
+    min-width: 400px;
+    max-width: 500px;
+    height: 200px;
+    background-color: #333;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 30px;
+    font-size: 15px;
+}
+#profile_img_con{
+    text-align: center;
+    font-family: helvetica;
+    color:gold;
+}
+#profile_img{
+    border-radius: 100%;
+    width: 150px;
+    height: 150px;
+}
+#profile_name{
+    font-size: 15px;
+}
+
+#profile_details{
+    font-size: 10px;
+}
+
+/* table design */
+#walletOverviewTable{
+    text-align: center;
+    color:blue;
+}
+table, th, td {
+    border: 1px solid black;
+  }
+thead{
+    text-align: center;
+    color:red;
+
+}

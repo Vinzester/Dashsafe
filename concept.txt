@@ -1,0 +1,21 @@
+Wallet App
+This is a wallet app intended so you can record your transactions.
+languages used:HTML,CSS,Javascript,PHP,mySQL
+Features:
+Alpha:
+Prototype
+Core actions
+-Add Wallet
+-Save Wallet
+-Delete Wallet
+-Withraw
+-Deposit 
+-Connect to Server and Database
+Beta:
+-Sign Up/Log in Feature
+-Connect to Online Database
+v1.0.1:
+-Add other semicore features
+-responsiveness
+v1.0.2
+-Fix UI
